@@ -1,4 +1,3 @@
-
 const thunk = require('redux-thunk').default;
 const {createStore, applyMiddleware} = require('redux');
 /*const reducer = (state, action)=>{
@@ -30,9 +29,10 @@ const myReducer = (state = 0, action) => {
 //myReducer(0, {type: 'sumar'}); // -> state = 1
 //myReducer(1, {type: 'restar'}); // -> state = 0
 // export default createStore(reducer,initialState);
-
+// conocer el dolor hace que te percates de de la importancia de la paz
+// por eso puedes esforzarte para proteger a los debiles
 const myReducer = (state, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 0:
             return state + 1 + ' life 100%';
         case 0.5:
@@ -49,22 +49,22 @@ const logger = store => next => action => {
     return result
 };
 // middleware in redux
-const normalizeStateOfLife = next => action =>{
+const normalizeStateOfLife = next => action => {
     let result = next(action);
-    if (action.stateOfLife.life === 0){
+    if (action.stateOfLife.life === 0) {
         action.stateOfLife.life++
-   }else{
-       console.log('es 1')
-   }
+    } else {
+        console.log('es 1')
+    }
     return result
 };
 
 const store = createStore(
     myReducer,
-    applyMiddleware(logger,normalizeStateOfLife)
+    applyMiddleware(logger, normalizeStateOfLife)
 );
 
-const stateOfLifeObject={
+const stateOfLifeObject = {
     life: 0
 };
 
@@ -80,5 +80,6 @@ function imaginator(stateOfLife) {
         stateOfLife
     };
 }
+
 store.dispatch(imaginator(stateOfLifeObject));
 //console.log(store.getState());
