@@ -1,5 +1,8 @@
 const thunk = require('redux-thunk').default;
 const {createStore, applyMiddleware} = require('redux');
+const {createSelector} = require('reselect');
+const {produce} = require("immer");
+
 /*const reducer = (state, action)=>{
   switch (action.type) {
       case SAVE_OPERATION:
@@ -31,15 +34,21 @@ const myReducer = (state = 0, action) => {
 // export default createStore(reducer,initialState);
 // conocer el dolor hace que te percates de de la importancia de la paz
 // por eso puedes esforzarte para proteger a los debiles
-const myReducer = (state, action) => {
-    switch (action.type) {
-        case 0:
-            return state + 1 + ' life 100%';
-        case 0.5:
-            return state + 0.5;
-        default:
-            return state;
-    }
+// definir un estado inicial para evitar NaN y undefined
+const myReducer = (state = 'default', action) => {
+    //produce(state, draft => {
+        switch (action.type) {
+            case 0:
+                /*draft[0].life = action.stateOfLife.life;*/
+                return 1;
+            case 0.5:
+                return 0.5;
+            case 1:
+                return 54345;
+            default:
+                return state;
+        }
+    //})
 };
 // middleware in redux
 const logger = store => next => action => {
@@ -49,10 +58,11 @@ const logger = store => next => action => {
     return result
 };
 // middleware in redux
-const normalizeStateOfLife = next => action => {
+const normalizeStateOfLife = store => next => action => {
     let result = next(action);
     if (action.stateOfLife.life === 0) {
-        action.stateOfLife.life++
+        action.stateOfLife.life++;
+        console.log(action.stateOfLife)
     } else {
         console.log('es 1')
     }
@@ -61,9 +71,10 @@ const normalizeStateOfLife = next => action => {
 
 const store = createStore(
     myReducer,
-    applyMiddleware(logger, normalizeStateOfLife)
+    applyMiddleware(logger ,normalizeStateOfLife )
 );
 
+// Objeto
 const stateOfLifeObject = {
     life: 0
 };
@@ -81,5 +92,29 @@ function imaginator(stateOfLife) {
     };
 }
 
-store.dispatch(imaginator(stateOfLifeObject));
+store.dispatch(imaginator(stateOfLifeObject)); // 0
+
+store.dispatch(imaginator(stateOfLifeObject)); // 1
 //console.log(store.getState());
+
+// deben ser funciones por eso el =>
+/*
+const getVisibilityFilter = state => state;
+const getTodos = state => state;
+
+const getVisibleTodos = createSelector(
+    [getVisibilityFilter, getTodos],
+    (visibilityFilter, todos) => {
+        switch (visibilityFilter) {
+            case 'SHOW_ALL':
+                return console.log(todos);
+            case 'SHOW_COMPLETED':
+                return console.log(todos);
+            case 'SHOW_ACTIVE':
+                return console.log(todos);
+            default:
+                return console.log('default')
+        }
+    }
+);
+getVisibleTodos('SHOW_COMPLETED', 'SHOW_ALL');*/
